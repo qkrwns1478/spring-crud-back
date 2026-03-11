@@ -3,53 +3,40 @@ package com.example.springcrudback.post;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.List;
 
 @RestController @RequestMapping("/posts")
 public class PostController {
-    private final Map<Long, Post> postsStore = new LinkedHashMap<>();
-    private final AtomicLong sequence = new AtomicLong(1);
 
-    @PostMapping @ResponseStatus(HttpStatus.CREATED)
-    public Post createPost(@RequestBody PostRequest request) {
-        Long id = sequence.getAndIncrement();
-        Post post = new Post(id, request.getTitle(), request.getContent());
-        postsStore.put(id, post);
-        return post;
+    private final PostService postService;
+
+    public PostController(PostService postService) {
+        this.postService = postService;
     }
 
-    @GetMapping @ResponseStatus(HttpStatus.OK)
-    public List<Post> getPosts() {
-        return new ArrayList<>(postsStore.values());
+    @PostMapping @ResponseStatus(HttpStatus.CREATED)
+    public Post create(@RequestBody PostRequest request) {
+        return postService.create(request);
+    }
+
+    @GetMapping
+    public List<Post> findAll() {
+        return postService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Post getPost(@PathVariable Long id) {
-        Post post = postsStore.get(id);
-        if (post == null) {
-            throw new IllegalArgumentException("Post with id " + id + " does not exist");
-        }
-        return post;
+    public Post findById(@PathVariable Long id) {
+        return postService.findById(id);
     }
 
     @PutMapping("/{id}")
-    public Post updatePost(@PathVariable Long id, @RequestBody PostRequest postRequest) {
-        Post post = postsStore.get(id);
-        if (post == null) {
-            throw new IllegalArgumentException("Post with id " + id + " does not exist");
-        }
-        post.setTitle(postRequest.getTitle());
-        post.setContent(postRequest.getContent());
-        return post;
+    public Post update(@PathVariable Long id, @RequestBody PostRequest request) {
+        return postService.update(id, request);
     }
 
-    @DeleteMapping("/{id}") @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePost(@PathVariable Long id) {
-        Post post = postsStore.get(id);
-        if (post == null) {
-            throw new IllegalArgumentException("Post with id " + id + " does not exist");
-        }
-        postsStore.remove(id);
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        postService.delete(id);
     }
 }
