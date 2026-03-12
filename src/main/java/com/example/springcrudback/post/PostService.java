@@ -13,28 +13,35 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public Post create(PostRequest request) {
+    public PostResponse create(PostRequest request) {
         Post post = new Post(request.getTitle(), request.getContent());
-        return postRepository.save(post);
+        Post savedPost = postRepository.save(post);
+        return PostResponse.from(savedPost);
     }
 
-    public List<Post> findAll() {
-        return postRepository.findAll();
+    public List<PostResponse> findAll() {
+        return postRepository.findAll()
+                .stream()
+                .map(PostResponse::from)
+                .toList();
     }
 
-    public Post findById(Long id) {
-        return postRepository.findById(id)
+    public PostResponse findById(Long id) {
+        Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(id));
+
+        return PostResponse.from(post);
     }
 
-    public Post update(Long id, PostRequest request) {
+    public PostResponse update(Long id, PostRequest request) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(id));
 
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
 
-        return postRepository.save(post);
+        Post updatedPost = postRepository.save(post);
+        return PostResponse.from(updatedPost);
     }
 
     public void delete(Long id) {

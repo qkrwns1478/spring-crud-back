@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController @RequestMapping("/posts")
+@RestController
+@RequestMapping("/posts")
 public class PostController {
 
     private final PostService postService;
@@ -15,23 +16,24 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping @ResponseStatus(HttpStatus.CREATED)
-    public Post create(@Valid @RequestBody PostRequest request) {
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PostResponse create(@Valid @RequestBody PostRequest request) {
         return postService.create(request);
     }
 
     @GetMapping
-    public List<Post> findAll() {
+    public List<PostResponse> findAll() {
         return postService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Post findById(@PathVariable Long id) {
+    public PostResponse findById(@PathVariable Long id) {
         return postService.findById(id);
     }
 
     @PutMapping("/{id}")
-    public Post update(@PathVariable Long id, @Valid @RequestBody PostRequest request) {
+    public PostResponse update(@PathVariable Long id, @Valid @RequestBody PostRequest request) {
         return postService.update(id, request);
     }
 
