@@ -1,5 +1,6 @@
 package com.example.springcrudback.post;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class PostController {
     }
 
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
-    public Post create(@RequestBody PostRequest request) {
+    public Post create(@Valid @RequestBody PostRequest request) {
         return postService.create(request);
     }
 
@@ -30,7 +31,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public Post update(@PathVariable Long id, @RequestBody PostRequest request) {
+    public Post update(@PathVariable Long id, @Valid @RequestBody PostRequest request) {
         return postService.update(id, request);
     }
 

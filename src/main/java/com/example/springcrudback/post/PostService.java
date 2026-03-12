@@ -24,12 +24,12 @@ public class PostService {
 
     public Post findById(Long id) {
         return postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post with id " + id + " does not exist"));
+                .orElseThrow(() -> new PostNotFoundException(id));
     }
 
     public Post update(Long id, PostRequest request) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post with id " + id + " does not exist"));
+                .orElseThrow(() -> new PostNotFoundException(id));
 
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
@@ -39,7 +39,7 @@ public class PostService {
 
     public void delete(Long id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post with id " + id + " does not exist"));
+                .orElseThrow(() -> new PostNotFoundException(id));
 
         postRepository.delete(post);
     }
