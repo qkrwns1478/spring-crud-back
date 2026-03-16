@@ -1,7 +1,9 @@
-package com.example.springcrudback.post;
+package com.example.springcrudback.common.error;
 
 import com.example.springcrudback.comment.CommentAccessDeniedException;
 import com.example.springcrudback.comment.CommentNotFoundException;
+import com.example.springcrudback.post.PostAccessDeniedException;
+import com.example.springcrudback.post.PostNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -79,6 +81,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CommentAccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleCommentAccessDenied(CommentAccessDeniedException e) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler(PostAccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handlePostAccessDenied(PostAccessDeniedException e) {
         ErrorResponse response = new ErrorResponse(
                 HttpStatus.FORBIDDEN.value(),
                 e.getMessage(),

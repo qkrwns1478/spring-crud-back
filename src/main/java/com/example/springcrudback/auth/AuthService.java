@@ -1,8 +1,5 @@
 package com.example.springcrudback.auth;
 
-import com.example.springcrudback.dto.AuthResponse;
-import com.example.springcrudback.dto.LoginRequest;
-import com.example.springcrudback.dto.SignupRequest;
 import com.example.springcrudback.user.Role;
 import com.example.springcrudback.user.UserAccount;
 import com.example.springcrudback.user.UserAccountRepository;
