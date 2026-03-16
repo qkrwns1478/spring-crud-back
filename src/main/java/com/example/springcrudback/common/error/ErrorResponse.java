@@ -1,4 +1,4 @@
-package com.example.springcrudback.post;
+package com.example.springcrudback.common.error;
 
 import lombok.Getter;
 

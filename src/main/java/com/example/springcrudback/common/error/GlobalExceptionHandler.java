@@ -1,7 +1,9 @@
-package com.example.springcrudback.post;
+package com.example.springcrudback.common.error;
 
 import com.example.springcrudback.comment.CommentAccessDeniedException;
 import com.example.springcrudback.comment.CommentNotFoundException;
+import com.example.springcrudback.post.PostAccessDeniedException;
+import com.example.springcrudback.post.PostNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

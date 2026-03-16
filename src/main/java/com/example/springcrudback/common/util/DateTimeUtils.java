@@ -1,4 +1,4 @@
-package com.example.springcrudback.common;
+package com.example.springcrudback.common.util;
 
 import java.time.Instant;
 import java.time.ZoneId;

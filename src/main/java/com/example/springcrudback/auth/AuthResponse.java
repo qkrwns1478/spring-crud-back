@@ -1,4 +1,4 @@
-package com.example.springcrudback.dto;
+package com.example.springcrudback.auth;
 
 import lombok.Getter;
 

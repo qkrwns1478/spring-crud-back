@@ -1,6 +1,6 @@
 package com.example.springcrudback.post;
 
-import com.example.springcrudback.common.DateTimeUtils;
+import com.example.springcrudback.common.util.DateTimeUtils;
 
 public record PostResponse(Long id, String title, String content, String writer, String createdAt, String updatedAt) {
 

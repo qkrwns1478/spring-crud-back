@@ -1,6 +1,6 @@
 package com.example.springcrudback.comment;
 
-import com.example.springcrudback.common.DateTimeUtils;
+import com.example.springcrudback.common.util.DateTimeUtils;
 
 public record CommentResponse(Long id, Long postId, String content, String writer, String createdAt,
                               String updatedAt) {
