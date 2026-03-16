@@ -33,12 +33,23 @@ public class CommentController {
         return commentService.findByPostId(postId);
     }
 
+    @PatchMapping("/{commentId}")
+    public CommentResponse update(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @Valid @RequestBody CommentRequest request,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return commentService.update(postId, commentId, request, userDetails.getUsername());
+    }
+
     @DeleteMapping("/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(
             @PathVariable Long postId,
-            @PathVariable Long commentId
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        commentService.delete(postId, commentId);
+        commentService.delete(postId, commentId, userDetails.getUsername());
     }
 }

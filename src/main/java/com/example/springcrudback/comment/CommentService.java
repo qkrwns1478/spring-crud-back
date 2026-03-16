@@ -43,7 +43,7 @@ public class CommentService {
                 .toList();
     }
 
-    public void delete(Long postId, Long commentId) {
+    public CommentResponse update(Long postId, Long commentId, CommentRequest request, String username) {
         if (!postRepository.existsById(postId)) {
             throw new PostNotFoundException(postId);
         }
@@ -51,14 +51,42 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(commentId));
 
-        if (!comment.getPost().getId().equals(postId)) {
-            throw new IllegalArgumentException("해당 게시글에 속한 댓글이 아닙니다.");
+        validateCommentBelongsToPost(comment, postId);
+        validateWriter(comment, username);
+
+        comment.setContent(request.getContent());
+
+        Comment updatedComment = commentRepository.save(comment);
+        return CommentResponse.from(updatedComment);
+    }
+
+    public void delete(Long postId, Long commentId, String username) {
+        if (!postRepository.existsById(postId)) {
+            throw new PostNotFoundException(postId);
         }
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
+
+        validateCommentBelongsToPost(comment, postId);
+        validateWriter(comment, username);
 
         commentRepository.delete(comment);
     }
 
     public void deleteAllByPostId(Long postId) {
         commentRepository.deleteByPostId(postId);
+    }
+
+    private void validateCommentBelongsToPost(Comment comment, Long postId) {
+        if (!comment.getPost().getId().equals(postId)) {
+            throw new IllegalArgumentException("해당 게시글에 속한 댓글이 아닙니다.");
+        }
+    }
+
+    private void validateWriter(Comment comment, String username) {
+        if (!comment.getWriter().equals(username)) {
+            throw new CommentAccessDeniedException();
+        }
     }
 }
