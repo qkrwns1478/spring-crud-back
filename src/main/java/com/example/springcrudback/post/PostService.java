@@ -2,6 +2,7 @@ package com.example.springcrudback.post;
 
 import com.example.springcrudback.comment.CommentService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class PostService {
         return PostResponse.from(updatedPost);
     }
 
+    @Transactional
     public void delete(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(id));
