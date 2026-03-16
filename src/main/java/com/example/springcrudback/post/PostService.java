@@ -1,6 +1,6 @@
 package com.example.springcrudback.post;
 
-import com.example.springcrudback.comment.CommentService;
+import com.example.springcrudback.comment.CommentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,15 +10,20 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final CommentService commentService;
+    private final CommentRepository commentRepository;
 
-    public PostService(PostRepository postRepository, CommentService commentService) {
+    public PostService(PostRepository postRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
-        this.commentService = commentService;
+        this.commentRepository = commentRepository;
     }
 
-    public PostResponse create(PostRequest request) {
-        Post post = new Post(request.getTitle(), request.getContent());
+    public PostResponse create(PostRequest request, String username) {
+        Post post = new Post(
+                request.getTitle(),
+                request.getContent(),
+                username
+        );
+
         Post savedPost = postRepository.save(post);
         return PostResponse.from(savedPost);
     }
@@ -37,9 +42,11 @@ public class PostService {
         return PostResponse.from(post);
     }
 
-    public PostResponse update(Long id, PostRequest request) {
+    public PostResponse update(Long id, PostRequest request, String username) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(id));
+
+        validateWriter(post, username);
 
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
@@ -49,11 +56,19 @@ public class PostService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long id, String username) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(id));
 
-        commentService.deleteAllByPostId(id);
+        validateWriter(post, username);
+
+        commentRepository.deleteByPostId(id);
         postRepository.delete(post);
+    }
+
+    private void validateWriter(Post post, String username) {
+        if (!post.getWriter().equals(username)) {
+            throw new PostAccessDeniedException();
+        }
     }
 }

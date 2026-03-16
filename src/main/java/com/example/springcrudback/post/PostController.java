@@ -2,6 +2,8 @@ package com.example.springcrudback.post;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +20,11 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PostResponse create(@Valid @RequestBody PostRequest request) {
-        return postService.create(request);
+    public PostResponse create(
+            @Valid @RequestBody PostRequest request,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return postService.create(request, userDetails.getUsername());
     }
 
     @GetMapping
@@ -32,14 +37,21 @@ public class PostController {
         return postService.findById(id);
     }
 
-    @PutMapping("/{id}")
-    public PostResponse update(@PathVariable Long id, @Valid @RequestBody PostRequest request) {
-        return postService.update(id, request);
+    @PatchMapping("/{id}")
+    public PostResponse update(
+            @PathVariable Long id,
+            @Valid @RequestBody PostRequest request,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return postService.update(id, request, userDetails.getUsername());
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        postService.delete(id);
+    public void delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        postService.delete(id, userDetails.getUsername());
     }
 }
