@@ -15,8 +15,7 @@ public class PostViewController {
     private final CommentService commentService;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("posts", postService.findAll());
+    public String list() {
         return "posts/list";
     }
 
