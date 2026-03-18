@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>스프링부트 게시판</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-3">
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 px-3">
+    <a class="navbar-brand" href="/view/posts">스프링부트 게시판</a>
+    <div class="ms-auto" id="authButtons">
+    </div>
+</nav>
+
+<div class="d-flex justify-content-between mb-3">
+    <h2>게시글 목록</h2>
+    <button id="btnWrite" class="btn btn-primary" onclick="location.href='/view/posts/write'">글쓰기</button>
+</div>
+
+<table class="table table-hover">
+    <thead class="table-light">
+    <tr>
+        <th>번호</th><th>제목</th><th>작성자</th><th>날짜</th>
+    </tr>
+    </thead>
+    <tbody id="postList">
+    </tbody>
+</table>
+
+<script>
+    const token = localStorage.getItem('accessToken');
+    const authButtons = document.getElementById('authButtons');
+
+    if (token) {
+        authButtons.innerHTML = `<button class="btn btn-outline-danger btn-sm" onclick="logout()">로그아웃</button>`;
+    } else {
+        authButtons.innerHTML = `
+                <a href="/view/login" class="btn btn-outline-primary btn-sm me-2">로그인</a>
+                <a href="/view/signup" class="btn btn-outline-success btn-sm">회원가입</a>`;
+        document.getElementById('btnWrite').style.display = 'none'; // 비로그인 시 글쓰기 숨김
+    }
+
+    function logout() {
+        localStorage.removeItem('accessToken');
+        location.reload();
+    }
+
+    fetch('/posts')
+        .then(res => res.json())
+        .then(posts => {
+            const html = posts.map(p => `
+                    <tr>
+                        <td>${p.id}</td>
+                        <td><a href="/view/posts/${p.id}">${p.title}</a></td>
+                        <td>${p.writer}</td>
+                        <td>${p.createdAt}</td>
+                    </tr>
+                `).join('');
+            document.getElementById('postList').innerHTML = html;
+        });
+</script>
+</body>
+</html>
