@@ -50,7 +50,6 @@
             .then(data => {
                 localStorage.setItem('accessToken', data.accessToken);
                 localStorage.setItem('tokenType', data.tokenType);
-                alert('로그인 성공!');
                 location.href = '/view/posts';
             })
             .catch(error => {
